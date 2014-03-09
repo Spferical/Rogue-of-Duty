@@ -10,6 +10,7 @@ class Item(Object):
     owner = None
     description = ''
     ammo = 6
+    ammo_name = 'ammo'
     def use(self, user):
         self.ammo -= 1
 
@@ -20,6 +21,7 @@ class Heal(Item):
     color = tcod.red
     heal_amount = 20
     ammo = 1
+    ammo_name = 'medkits'
     description = 'Heals you completely. One-time use'
 
     def use(self, user):
@@ -38,6 +40,7 @@ class Heal(Item):
 class Grenade(Item):
     char = '*'
     name = 'grenade'
+    ammo_name = 'grenades'
     color = tcod.green
     oneuse = True
     damage = 10
@@ -71,6 +74,7 @@ class Gun(Item):
     char = '/'
     color = tcod.gray
     name = 'rifle'
+    ammo_name = 'rifle bullets'
     description = 'Fires a bullet. %d ammo, %d damage' % (ammo, damage)
     def use(self, user, direction=None):
         if direction is None:

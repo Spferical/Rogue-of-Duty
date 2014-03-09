@@ -273,6 +273,24 @@ class Player(Mob):
         self.color = tcod.dark_red
         self.name = 'remains of ' + self.name
 
+    def move_to(self, x, y):
+        m = Mob.move_to(self, x, y)
+        if m == 'moved':
+            # pick up any ammo from weapons we have on the ground
+            for o in terrain.map.objects:
+                if (o.x == self.x and o.y == self.y) and\
+                        isinstance(o, item.Item):
+
+                    for i in self.inventory:
+                        if o.name == i.name:
+                            o.dead = True
+                            i.ammo += o.ammo
+                            ui.message("You pick up %d %s!"
+                                       % (o.ammo, i.ammo_name))
+                            break
+        return m
+
+
 
 class Corpse(Object):
     char = '%'
