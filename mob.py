@@ -228,8 +228,6 @@ class Player(Mob):
     strength = 6
     defense = 0
     faction = 1
-    mana = 100
-    max_mana = 100
     description = 'a stinking human thief'
     blocks = False
     def __init__(self, pos):
@@ -239,13 +237,9 @@ class Player(Mob):
         #would carry over each game... which we don't want
         self.inventory = []
 
-    def update(self):
-        self.mana += 1
-        self.mana = min(self.mana, self.max_mana)
-
     def use(self, item):
-        if self.mana < item.mana_use:
-            ui.message("You don't have enough mana!")
+        if item.ammo <= 0:
+            ui.message("You don't have enough ammo!")
             return False
         else:
             return item.use(self)

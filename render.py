@@ -56,11 +56,11 @@ def render_bottom_panel():
                        str(game.player.inventory[2].name))
     tcod.console_set_default_foreground(bottom_panel, tcod.cyan)
     tcod.console_print(bottom_panel, 4, 8, \
-                       str(game.player.inventory[0].mana_use) + ' mana')
+                       str(game.player.inventory[0].ammo) + ' ammo')
     tcod.console_print(bottom_panel, 4, 10, \
-                       str(game.player.inventory[1].mana_use) + ' mana')
+                       str(game.player.inventory[1].ammo) + ' ammo')
     tcod.console_print(bottom_panel, 4, 12, \
-                       str(game.player.inventory[2].mana_use) + ' mana')
+                       str(game.player.inventory[2].ammo) + ' ammo')
     tcod.console_set_alignment(bottom_panel, tcod.LEFT)
     # render game messages
     render_messages()
@@ -117,9 +117,6 @@ def render_stats_of_mobs(mobs):
         #tcod.console_set_default_foreground(right_panel, tcod.red)
         if m.ai:
             tcod.console_print(right_panel, 1, y, 'Strength: ' + str(m.strength))
-        if isinstance(m, mob.Player):
-            render_bar(right_panel, 1, y, BAR_WIDTH, 'MANA', m.mana,
-                       m.max_mana, tcod.blue, tcod.darker_blue)
 
         y += 1
         render_bar(right_panel, 1, y, BAR_WIDTH, 'HP', m.hp,
