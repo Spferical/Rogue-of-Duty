@@ -165,19 +165,17 @@ def randomly_spawn_enemies():
         f = random.randint(1, 2)
         if f == 1: y = 0
         elif f == 2: y = terrain.map.height - 1
-        obj = random.choice(mob.factions[f])((x, y))
-        obj.faction = f
+        obj = random.choice(mob.moblist)((x, y), f)
         spawn_object(obj)
 
 def spawn_enemies(x, map=None):
     if map == None:
         map = terrain.map
     #spawns enemies on random spot on top and bottom of map
-    obj = random.choice(mob.factions[1])((x, 0))
+    obj = random.choice(mob.moblist)((x, 0), 1)
     obj.faction = 1
     spawn_object(obj, map)
-    obj = random.choice(mob.factions[2])((x, map.height - 1))
-    obj.faction = 2
+    obj = random.choice(mob.moblist)((x, map.height - 1), 2)
     spawn_object(obj, map)
 
 

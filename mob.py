@@ -291,67 +291,20 @@ class Corpse(Object):
         pass
 
 
-class Orc(RangedMob):
-    char = 'o'
-    color = tcod.dark_orange  # close to brown
-    name = 'orc'
+class Infantry(RangedMob):
+    def __init__(self, pos, faction):
+        self.color = factions[faction]
+        self.faction = faction
+        RangedMob.__init__(self, pos)
+    char = 'I'
+    name = 'infantry'
+    description = 'a standard soldier'
     max_hp = 10
     strength = 4
-    description = 'a brutish, aggressive and repulsive carnivore'
     ai = ai.BasicMonster()
 
-
-class Goblin(RangedMob):
-    char = 'g'
-    color = tcod.green
-    name = 'goblin'
-    description = 'short, ugly and unfriendly'
-    max_hp = 5
-    strength = 3
-    ai = ai.BasicMonster()
-
-
-class Kobold(RangedMob):
-    char = 'k'
-    color = tcod.light_green
-    name = 'kobold'
-    description = 'a small and violent scavenger'
-    max_hp = 2
-    strength = 2
-    ai = ai.BasicMonster()
-
-
-class Troll(Mob):
-    char = 'T'
-    color = tcod.dark_green
-    name = 'troll'
-    description = 'a hulking brute - beware its claws'
-    max_hp = 20
-    strength = 5
-    ai = ai.BasicMonster()
-
-
-class DwarfRanger(RangedMob):
-    char = 2  # the smiley face... as is tradition
-    color = tcod.light_green
-    name = 'crossbowdwarf'
-    description = 'a short and sturdy alcoholic'
-    max_hp = 10
-    strength = 2
-    ai = ai.BasicMonster()
-
-class DwarfMelee(Mob):
-    char = 2  # the smiley face... as is tradition
-    color = tcod.darker_blue
-    name = 'axedwarf'
-    description = 'a short and sturdy alcoholic'
-    max_hp = 10
-    strength = 6
-    ai = ai.BasicMonster()
-
-
-moblist = [Orc, Goblin, Troll, Kobold]
+moblist = [Infantry]
 factions = {
-    1 : [DwarfRanger, DwarfMelee],
-    2 : [Orc, Goblin, Troll, Kobold]
+    1 : tcod.cyan,
+    2 : tcod.red,
 }
