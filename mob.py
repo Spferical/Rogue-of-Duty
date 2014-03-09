@@ -222,18 +222,19 @@ class RangedMob(Mob):
 
 class Player(Mob):
     char = '@'
-    color = tcod.white
+    faction = 1
     name = 'player'
     max_hp = 15
     strength = 6
     defense = 0
-    faction = 0
+    faction = 1
     mana = 100
     max_mana = 100
     description = 'a stinking human thief'
     blocks = False
     def __init__(self, pos):
         Mob.__init__(self, pos)
+        self.color = factions[self.faction]
         #if we don't create a new list every game stary, the player's inventory
         #would carry over each game... which we don't want
         self.inventory = []
