@@ -44,7 +44,11 @@ MAC = False
 MINGW = False
 MSVC = False
 if sys.platform.find('linux') != -1:
-    _lib = ctypes.cdll['./libtcod.so']
+    try:
+        _lib = ctypes.cdll['./libtcod.so']
+    except OSError:
+        # if 32bit lib doesn't work, try 64bit
+        _lib = ctypes.cdll['./libtcod64.so']
     LINUX = True
 elif sys.platform.find('darwin') != -1:
     _lib = ctypes.cdll['./libtcod.dylib']
