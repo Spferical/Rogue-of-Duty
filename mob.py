@@ -6,6 +6,7 @@ import ui
 import copy
 import item
 import terrain
+import random
 from config import DIAGONAL_MOVEMENT, BULLET_LIFE, DAMAGE_EFFECT_FADE
 
 
@@ -291,6 +292,14 @@ class Infantry(RangedMob):
         self.color = factions[faction]
         self.faction = faction
         RangedMob.__init__(self, pos)
+
+    def die(self):
+        RangedMob.die(self)
+        if random.randint(0, 1) == 1:
+            drop = item.Gun((self.x, self.y))
+            drop.ammo = random.randint(1, 10)
+            terrain.map.objects.append(drop)
+
     char = 'I'
     name = 'infantry'
     description = 'a standard soldier'
