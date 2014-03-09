@@ -176,6 +176,7 @@ def spawn_enemies(x, map=None):
     obj.faction = 1
     spawn_object(obj, map)
     obj = random.choice(mob.moblist)((x, map.height - 1), 2)
+    obj.faction = 2
     spawn_object(obj, map)
 
 
