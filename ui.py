@@ -1,5 +1,5 @@
 import libtcodpy as tcod
-from config import INVENTORY_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH
+from config import INVENTORY_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, GAME_NAME
 import render
 import textwrap
 from config import MSG_WIDTH, MSG_HEIGHT
@@ -149,7 +149,7 @@ def handle_main_menu():
         # show the game's title, and some credits!
         tcod.console_set_default_foreground(0, tcod.white)
         tcod.console_print_ex(0, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 4,
-                              tcod.BKGND_NONE, tcod.CENTER, 'Fleeing the Fray')
+                              tcod.BKGND_NONE, tcod.CENTER, GAME_NAME)
         tcod.console_print_ex(0, SCREEN_WIDTH / 2, SCREEN_HEIGHT - 2,
                               tcod.BKGND_NONE, tcod.CENTER,
                               'By Spferical (Spferical@gmail.com)')
