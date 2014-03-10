@@ -18,6 +18,9 @@ class Mob(Object):
     ai = None
     description = 'this is a Mob'
     damaged = 0
+    drop = None
+    drop_ammo_range = (0, 0)
+    drop_chance = 0
 
     def __init__(self, pos):
         Object.__init__(self, pos)
@@ -138,6 +141,13 @@ class Mob(Object):
     def die(self):
         ui.message(self.name.capitalize() + ' dies!', tcod.red)
         terrain.map.objects.insert(0, Corpse(self))
+
+        if self.drop and random.random() < self.drop_chance:
+            drop = self.drop((self.x, self.y))
+            drop.ammo = random.randint(self.drop_ammo_range[0],
+                                       self.drop_ammo_range[1])
+            terrain.map.objects.append(drop)
+
 
 
 class Bullet(Object):
@@ -306,26 +316,54 @@ class Corpse(Object):
 
 
 class Infantry(RangedMob):
-    def __init__(self, pos, faction):
-        self.color = factions[faction]
-        self.faction = faction
-        RangedMob.__init__(self, pos)
-
-    def die(self):
-        RangedMob.die(self)
-        if random.randint(0, 1) == 1:
-            drop = item.Gun((self.x, self.y))
-            drop.ammo = random.randint(1, 10)
-            terrain.map.objects.append(drop)
-
     char = 'I'
     name = 'infantry'
     description = 'a standard soldier'
     max_hp = 10
     strength = 4
+    healer = False
     ai = ai.SoldierAI()
 
-moblist = [Infantry]
+    spawn_weight = 10
+
+    drop = item.Gun
+    drop_ammo_range = (1, 10)
+    drop_chance = 0.5
+
+    def __init__(self, pos, faction):
+        self.color = factions[faction]
+        self.faction = faction
+        RangedMob.__init__(self, pos)
+
+
+class Medic(Infantry):
+    char = 'M'
+    name = 'medic'
+    description = 'a combat medic, skilled at healing troops'
+    healer = True
+
+    spawn_weight = 10000
+
+    drop = item.Heal
+    drop_ammo_range = (1, 2)
+    drop_chance = 0.5
+
+    def heal(self, mob):
+        ui.message('The ' + self.name + ' heals the ' + mob.name, tcod.green)
+        mob.hp = mob.max_hp
+
+
+def get_random_mob(list):
+    # Modified from http://stackoverflow.com/questions/3679694
+    total = sum(mob.spawn_weight for mob in list)
+    r = random.uniform(0, total)
+    upto = 0
+    for mob in list:
+        if upto + mob.spawn_weight > r:
+            return mob
+        upto += mob.spawn_weight
+
+moblist = [Infantry, Medic]
 factions = {
     1 : tcod.cyan,
     2 : tcod.red,

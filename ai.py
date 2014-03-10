@@ -71,6 +71,20 @@ class SoldierAI(BasicMonster):
             # when the player moves
             self.move_towards_right()
         else:
+            if self.owner.healer:
+                for object in terrain.map.objects:
+                    if isinstance(object, mob.Mob) and \
+                            not object.dead and \
+                            object.hp < object.max_hp and \
+                            object.faction == self.owner.faction:
+                        dist = self.owner.distance_to(object)
+                        if dist == 1:
+                            self.owner.heal(object)
+                            self.state = 'healing'
+                            break
+                # no objects found
+                if self.state == 'healing':
+                    self.state = 'resting'
             BasicMonster.update(self);
             if self.state == 'resting':
                 self.state = 'advancing'
@@ -84,3 +98,4 @@ class SoldierAI(BasicMonster):
         self.owner.move(1, 0)
     def move_towards_left(self):
         self.owner.move(-1, 0)
+
