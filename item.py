@@ -73,6 +73,7 @@ class Gun(Item):
     damage = 5
     char = '/'
     color = tcod.gray
+    bulletcolor = tcod.yellow
     name = 'rifle'
     ammo_name = 'rifle bullets'
     description = 'Fires a bullet. %d ammo, %d damage' % (ammo, damage)
@@ -85,7 +86,7 @@ class Gun(Item):
                 return False
         (dx, dy) = direction
         pos = (user.x, user.y)
-        bullet = mob.Bullet(pos, self.damage, self.color, dx, dy)
+        bullet = mob.Bullet(pos, self.damage, self.bulletcolor, dx, dy)
         terrain.map.objects.append(bullet)
         Item.use(self, user)
         return True
