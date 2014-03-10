@@ -323,7 +323,7 @@ class Infantry(RangedMob):
     description = 'a standard soldier'
     max_hp = 10
     strength = 4
-    ai = ai.BasicMonster()
+    ai = ai.SoldierAI()
 
 moblist = [Infantry]
 factions = {

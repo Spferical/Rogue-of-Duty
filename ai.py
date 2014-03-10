@@ -19,7 +19,7 @@ class BasicMonster:
                 if isinstance(object, mob.Mob) and \
                     object.faction != self.owner.faction:
                     dist = self.owner.distance_to(object)
-                    if dist < TORCH_RADIUS + 999999999:
+                    if dist < TORCH_RADIUS:
                         if not self.target or dist < target_dist:
                             self.target = object
                             self.state = 'chasing'
@@ -63,3 +63,13 @@ class ConfusedMob:
         self.confused_turns -= 1
         if self.confused_turns <= 0:
             self.owner.ai = self.old_ai
+
+class SoldierAI(BasicMonster):
+    def update(self):
+        BasicMonster.update(self);
+        if self.state == 'resting':
+            self.state = 'advancing'
+            if self.owner.faction == 1:
+                self.owner.move_towards(terrain.map.width - 1, self.owner.y)
+            else:
+                self.owner.move_towards(0, self.owner.y)
