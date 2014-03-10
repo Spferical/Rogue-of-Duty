@@ -44,18 +44,52 @@ class Grenade(Item):
     color = tcod.green
     oneuse = True
     damage = 10
-    radius = 2
+    radius = 5
     ammo = 2
-    description = 'Explodes in a %d tile radius dealing %d damage; thrown.' \
+    description = 'Explodes in a %d tile radius dealing %d damage after 5 turns' \
             % (radius, damage)
 
-    def use(self, user):
-        (x, y) = ui.target_tile()
-        if (x, y) == (None, None):
-            return False
-        explode(x, y, self.radius, self.damage)
+    def use(self, user, direction=None):
+        if direction is None:
+            direction = ui.pick_direction()
+            #if player exitted out if pick_direction or something:
+            #just quit
+            if direction is None:
+                return False
+        (dx, dy) = direction
+        pos = (user.x, user.y)
+        grenade = ActiveGrenade(pos, self.damage, self.radius, dx, dy)
+        terrain.map.objects.append(grenade)
         Item.use(self, user)
         return True
+
+
+class ActiveGrenade(Object):
+    name = 'active grenade'
+    char = '*'
+    color = tcod.green
+    blocks = False
+    def __init__(self, pos, damage, radius, dx, dy):
+        Object.__init__(self, pos)
+        self.damage = damage
+        self.radius = radius
+        self.dx, self.dy = dx, dy
+        self.life = 5
+
+    def update(self):
+        if self.life <= 0:
+            self.dead = True
+            ui.message("The grenade explodes!", tcod.light_red)
+            explode(self.x, self.y, self.radius, self.damage)
+            return
+        self.life -= 1
+
+        # grenades stop when hitting walls
+        if terrain.map.is_blocked(self.x + self.dx, self.y + self.dy):
+            self.dx = self.dy = 0
+
+        self.x += self.dx
+        self.y += self.dy
 
 
 def explode(x, y, radius, damage):
