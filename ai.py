@@ -66,10 +66,19 @@ class ConfusedMob:
 
 class SoldierAI(BasicMonster):
     def update(self):
-        BasicMonster.update(self);
-        if self.state == 'resting':
-            self.state = 'advancing'
-            if self.owner.faction == 1:
-                self.owner.move_towards(terrain.map.width - 1, self.owner.y)
-            else:
-                self.owner.move_towards(0, self.owner.y)
+        if self.owner.x == 0:
+            # we don't want soldiers to be scrolled off of the map
+            # when the player moves
+            self.move_towards_right()
+        else:
+            BasicMonster.update(self);
+            if self.state == 'resting':
+                self.state = 'advancing'
+                if self.owner.faction == 1:
+                    self.move_towards_right()
+                else:
+                    self.move_towards_left()
+    def move_towards_right(self):
+        self.owner.move_towards(terrain.map.width - 1, self.owner.y)
+    def move_towards_left(self):
+        self.owner.move_towards(0, self.owner.y)
