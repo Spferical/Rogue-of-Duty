@@ -342,7 +342,7 @@ class Medic(Infantry):
     description = 'a combat medic, skilled at healing troops'
     healer = True
 
-    spawn_weight = 10000
+    spawn_weight = 1
 
     drop = item.Heal
     drop_ammo_range = (1, 2)
