@@ -160,18 +160,17 @@ def get_names_under_mouse():
 
 
 def randomly_spawn_enemies():
-    if random.randint(1, 5) == 1:
-        y = random.randint(0, terrain.map.height - 1)
+    y = random.randint(0, terrain.map.height - 1)
 
-        if random.randint(1, 3) == 1:
-            f = 1
-        else:
-            f = 2
+    if random.randint(1, 3) == 1:
+        f = 1
+        x = 0
+    else:
+        f = 2
+        x = terrain.map.width - 1
 
-        if f == 1: x = 0
-        elif f == 2: x = terrain.map.width - 1
-        obj = random.choice(mob.moblist)((x, y), f)
-        spawn_object(obj)
+    obj = random.choice(mob.moblist)((x, y), f)
+    spawn_object(obj)
 
 def spawn_enemies(x, map=None):
     if map == None:
