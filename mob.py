@@ -133,7 +133,7 @@ class Mob(Object):
         (x, y) = tcod.path_walk(terrain.map.path, True)
         if not (x, y) == (None, None):
             dx, dy = (x - self.x, y - self.y)
-            self.move(dx, dy)
+            return self.move(dx, dy)
 
     def die(self):
         ui.message(self.name.capitalize() + ' dies!', tcod.red)
