@@ -113,12 +113,11 @@ def render_stats_of_mobs(mobs):
         for line in textwrap.wrap(m.description, RIGHT_PANEL_WIDTH - 1):
             tcod.console_print(right_panel, 1, y, line)
             y += 1
-        y += 1
         #tcod.console_set_default_foreground(right_panel, tcod.red)
         if m.ai:
             tcod.console_print(right_panel, 1, y, 'Strength: ' + str(m.strength))
+            y += 1
 
-        y += 1
         render_bar(right_panel, 1, y, BAR_WIDTH, 'HP', m.hp,
                    m.max_hp, tcod.red, tcod.darker_red)
         y += 2
