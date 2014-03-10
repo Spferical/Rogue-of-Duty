@@ -95,7 +95,7 @@ class SoldierAI(BasicMonster):
                 else:
                     self.move_towards_left()
     def move_towards_right(self):
-        self.owner.move(1, 0)
+        self.owner.move_or_get_mob(1, 0)
     def move_towards_left(self):
-        self.owner.move(-1, 0)
+        self.owner.move_or_get_mob(-1, 0)
 

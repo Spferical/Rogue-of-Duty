@@ -36,19 +36,23 @@ class Mob(Object):
             self.ai.update()
 
     def move_or_attack(self, dx, dy):
+        m = self.move_or_get_mob(dx, dy)
+
+        if isinstance(m, Mob):
+            self.attack(m)
+            return 'attacked'
+        else:
+            return m
+
+    def move_or_get_mob(self, dx, dy):
         x = self.x + dx
         y = self.y + dy
 
         target = None
         for object in terrain.map.objects:
             if isinstance(object, Mob) and (object.x, object.y) == (x, y):
-                target = object
-                break
-        if target:
-            self.attack(target)
-            return 'attacked'
-        else:
-            return self.move(dx, dy)
+                return object
+        return self.move(dx, dy)
 
     def attack(self, target):
         damage = target.take_damage(self.strength)
