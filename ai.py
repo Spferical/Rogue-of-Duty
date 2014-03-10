@@ -74,11 +74,13 @@ class SoldierAI(BasicMonster):
             BasicMonster.update(self);
             if self.state == 'resting':
                 self.state = 'advancing'
+
+            if self.state == 'advancing':
                 if self.owner.faction == 1:
                     self.move_towards_right()
                 else:
                     self.move_towards_left()
     def move_towards_right(self):
-        self.owner.move_towards(terrain.map.width - 1, self.owner.y)
+        self.owner.move(1, 0)
     def move_towards_left(self):
-        self.owner.move_towards(0, self.owner.y)
+        self.owner.move(-1, 0)
