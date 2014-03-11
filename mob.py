@@ -155,7 +155,7 @@ class Mob(Object):
 
 
 class Bullet(Object):
-    name = 'crossbow bolt'
+    name = 'bullet'
     faction = -1
     blocks = False
     #dict of ascii chars that will be used with different bullet velocities
@@ -243,7 +243,7 @@ class Player(Mob):
     strength = 6
     defense = 0
     faction = 1
-    description = 'a stinking human thief'
+    description = ''
     blocks = False
     def __init__(self, pos):
         Mob.__init__(self, pos)
