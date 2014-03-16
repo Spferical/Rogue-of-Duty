@@ -184,32 +184,28 @@ class Bullet(Object):
         #it doesn't get a blow in before it dies
         #it feels better this way when playing
         #hackish way of doing it though: update, then roll back updates
-        self.update()
+        for i in range(self.speed):
+            self.update()
         if not self.dead:
             self.x -= self.dx * self.speed
             self.y -= self.dy * self.speed
             self.life += self.speed
 
     def update(self):
-        for i in range(self.speed):
-            self.life -= 1
-            self.x += self.dx
-            self.y += self.dy
-            if terrain.map.is_blocked(self.x, self.y):
+        self.life -= 1
+        self.x += self.dx
+        self.y += self.dy
+        if terrain.map.is_blocked(self.x, self.y):
+            self.dead = True
+        for object in terrain.map.mobs:
+            if object.x == self.x and object.y == self.y:
+                object.take_damage(self.damage - object.defense)
+                ui.message(object.name.capitalize() + 
+                        ' is hit by a ' + self.name)
                 self.dead = True
-            for object in terrain.map.mobs:
-                if object.x == self.x and object.y == self.y:
-                    object.take_damage(self.damage - object.defense)
-                    ui.message(object.name.capitalize() + 
-                            ' is hit by a ' + self.name)
-                    self.dead = True
-                    break
-            if self.life <= 0:
-                self.dead = True
-            if self.dead:
                 break
-            elif i != 0:
-                effects.add_fade_effect(self.x, self.y, self.color)
+        if self.life <= 0:
+            self.dead = True
 
 
 class RangedMob(Mob):

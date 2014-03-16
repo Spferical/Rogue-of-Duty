@@ -46,8 +46,8 @@ class Grenade(Item):
     damage = 10
     radius = 5
     ammo = 2
-    description = 'Explodes in a %d tile radius dealing %d damage after 5 turns' \
-            % (radius, damage)
+    description = 'Thrown 7 tiles, explodes in a %d tile radius' \
+            % (radius)
 
     def use(self, user, direction=None):
         if direction is None:
@@ -74,7 +74,7 @@ class ActiveGrenade(Object):
         self.damage = damage
         self.radius = radius
         self.dx, self.dy = dx, dy
-        self.life = 5
+        self.life = 7
 
     def update(self):
         if self.life <= 0:

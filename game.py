@@ -99,7 +99,7 @@ def run():
         action = handle_keys()
         if action:
             compute_fov()
-            update_objects()
+            update_objects(True)
             randomly_spawn_enemies()
             current_turn += 1
             if player.x + terrain.map.scroll_amount >= VICTORY_DISTANCE:
@@ -109,9 +109,9 @@ def run():
         render.render_all()
 
 
-def update_objects():
+def update_objects(render_bullets_flying=False):
     # update all objects
-    for list in terrain.map.objectlists:
+    for list in terrain.map.objectlists[:-1]:
         for object in list[:]:
             #only update living objects
             if not object.dead:
@@ -119,6 +119,16 @@ def update_objects():
             if player.dead:
                 #if player dies, immediately end gameplay
                 break
+
+    for i in range(mob.Bullet.speed):
+        for bullet in terrain.map.bullets[:]:
+            if not bullet.dead:
+                bullet.update()
+            if bullet.dead:
+                terrain.map.bullets.remove(bullet)
+        if render_bullets_flying:
+            render.render_all()
+
 
     #also update objects in player inventory
     #e.g. passive items may do stuff here
