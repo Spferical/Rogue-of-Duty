@@ -14,14 +14,13 @@ class BasicMonster:
         # a basic monster takes its turn. If you can see it, it can see you
         if self.target:
             target_dist = self.owner.distance_to(self.target)
-        for object in terrain.map.objects:
-            if object != self.target:
-                if isinstance(object, mob.Mob) and \
-                    object.faction != self.owner.faction:
-                    dist = self.owner.distance_to(object)
+        for m in terrain.map.mobs:
+            if m != self.target:
+                if m.faction != self.owner.faction:
+                    dist = self.owner.distance_to(m)
                     if dist < TORCH_RADIUS:
                         if not self.target or dist < target_dist:
-                            self.target = object
+                            self.target = m
                             self.state = 'chasing'
                             return
 
@@ -72,17 +71,16 @@ class SoldierAI(BasicMonster):
             self.move_towards_right()
         else:
             if self.owner.healer:
-                for object in terrain.map.objects:
-                    if isinstance(object, mob.Mob) and \
-                            not object.dead and \
-                            object.hp < object.max_hp and \
-                            object.faction == self.owner.faction:
-                        dist = self.owner.distance_to(object)
+                for m in terrain.map.mobs:
+                    if not m.dead and \
+                            m.hp < m.max_hp and \
+                            m.faction == self.owner.faction:
+                        dist = self.owner.distance_to(m)
                         if dist == 1:
-                            self.owner.heal(object)
+                            self.owner.heal(m)
                             self.state = 'healing'
                             break
-                # no objects found
+                # no mobs found
                 if self.state == 'healing':
                     self.state = 'resting'
             BasicMonster.update(self);

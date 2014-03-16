@@ -60,7 +60,14 @@ class Map:
     def __init__(self, width, height):
         self.width = width
         self.height = height
+
+        self.mobs = []
+        self.items = []
+        self.bullets = []
+        # objects are anything not in the above lists
         self.objects = []
+        self.objectlists = (self.objects, self.items, self.mobs, self.bullets)
+
         self.scroll_amount = 0
 
         # make a grid of generic floor tiles

@@ -92,10 +92,10 @@ def render_messages():
 
 def get_closest_mobs_to_player():
     # gets 5 closest mobs to player
-    mobs = terrain.map.objects[:]
+    mobs = terrain.map.mobs[:]
     mobs.sort(key=game.player.distance_to)
     for object in mobs[:]:
-        if not isinstance(object, mob.Mob) or not tcod.map_is_in_fov(
+        if not tcod.map_is_in_fov(
                 terrain.map.fov_map, object.x, object.y):
             mobs.remove(object)
     return mobs[:10]
@@ -220,9 +220,11 @@ def dehilight_old_mouse_position():
 
 def render_all():
     # draw each object
-    for object in terrain.map.objects:
-        if tcod.map_is_in_fov(terrain.map.fov_map, object.x, object.y):
-            draw_object(object)
+    for list in terrain.map.objectlists:
+        for object in list:
+            print (object.x, object.y)
+            if tcod.map_is_in_fov(terrain.map.fov_map, object.x, object.y):
+                draw_object(object)
     dehilight_old_mouse_position()
     highlight_mouse_position()
     # blit renderer main (map) console to tcod's main console
@@ -235,8 +237,9 @@ def render_all():
     tcod.console_flush()
 
     # clear all objects for the next frame
-    for object in terrain.map.objects:
-        clear_object(object)
+    for list in terrain.map.objectlists:
+        for object in list:
+            clear_object(object)
 
 
 def render_bar(panel, x, y, total_width, name, value, maximum, bar_color,

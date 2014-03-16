@@ -52,11 +52,10 @@ def handle_keys():  # controls
         elif key in ('g', ','):
             # pick up an item
             # look for an item in player's tile
-            for object in terrain.map.objects:
-                if isinstance(object, item.Item):
-                    if (object.x, object.y) == (player.x, player.y):
-                        player.pick_up(object)
-                        break
+            for object in terrain.map.items:
+                if (object.x, object.y) == (player.x, player.y):
+                    player.pick_up(object)
+                    break
         # inventory menu
         elif key == 'z':
             #use player's first item
@@ -111,14 +110,16 @@ def run():
 
 
 def update_objects():
-    # update all objects
-    for object in terrain.map.objects[:]:
-        #only update living objects
-        if not object.dead:
-            object.update()
-        if player.dead:
-            #if player dies, immediately end gameplay
-            break
+    # update all objects except for bullets
+    for list in terrain.map.objectlists[:-1]:
+        for object in list:
+            #only update living objects
+            if not object.dead:
+                object.update()
+            if player.dead:
+                #if player dies, immediately end gameplay
+                break
+
     #also update objects in player inventory
     #e.g. passive items may do stuff here
     if not player.dead:
@@ -128,15 +129,16 @@ def update_objects():
 
 def purge_dead_objects():
     # get rid of all dead objects
-    for object in terrain.map.objects[:]:
-        if object.dead:
-            object.die()
-            if object == player:
-                ui.message('GAME OVER! Press escape to exit.')
-                global state
-                state = 'dead'
-            else:
-                terrain.map.objects.remove(object)
+    for list in terrain.map.objectlists:
+        for object in list:
+            if object.dead:
+                object.die()
+                if object == player:
+                    ui.message('GAME OVER! Press escape to exit.')
+                    global state
+                    state = 'dead'
+                else:
+                    list.remove(object)
 
 
 def get_names_under_mouse():
@@ -148,8 +150,12 @@ def get_names_under_mouse():
     # create a list with the names of all objects at the mouse's coords
     # and in FOV
     if tcod.map_is_in_fov(terrain.map.fov_map, x, y):
-        names = [obj.name for obj in terrain.map.objects
-                 if (obj.x, obj.y) == (x, y)]
+
+        names = []
+        for list in terrain.map.objectlists:
+            names.extend([obj.name for obj in list
+                if (obj.x, obj.y) == (x, y)])
+
         # add the name of the map tile under any objects
         if x < terrain.map.width and y < terrain.map.height:
             names.insert(0, terrain.map[x][y].name)
@@ -170,7 +176,7 @@ def randomly_spawn_enemies():
         x = terrain.map.width - 1
 
     obj = mob.get_random_mob(mob.moblist)((x, y), f)
-    spawn_object(obj)
+    spawn_mob(obj)
 
 def spawn_enemies(x, map=None):
     if map == None:
@@ -178,17 +184,17 @@ def spawn_enemies(x, map=None):
     #spawns enemies on random spot on top and bottom of map
     obj = mob.get_random_mob(mob.moblist)((x, 0), 1)
     obj.faction = 1
-    spawn_object(obj, map)
+    spawn_mob(obj, map)
     obj = mob.get_random_mob(mob.moblist)((x, map.height - 1), 2)
     obj.faction = 2
-    spawn_object(obj, map)
+    spawn_mob(obj, map)
 
 
-def spawn_object(object, map=None):
+def spawn_mob(object, map=None):
     if map == None:
         map = terrain.map
     if not map.is_blocked(object.x, object.y):
-        map.objects.append(object)
+        map.mobs.append(object)
 
 
 def new_game():
@@ -209,7 +215,7 @@ def new_game():
     for i in range(50):
         update_objects()
 
-    terrain.map.objects.append(player)
+    terrain.map.mobs.append(player)
     ui.clear_messages()
 
     render.init()

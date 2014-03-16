@@ -49,8 +49,8 @@ class Mob(Object):
         y = self.y + dy
 
         target = None
-        for object in terrain.map.objects:
-            if isinstance(object, Mob) and (object.x, object.y) == (x, y):
+        for object in terrain.map.mobs:
+            if (object.x, object.y) == (x, y):
                 return object
         return self.move(dx, dy)
 
@@ -150,7 +150,7 @@ class Mob(Object):
             drop = self.drop((self.x, self.y))
             drop.ammo = random.randint(self.drop_ammo_range[0],
                                        self.drop_ammo_range[1])
-            terrain.map.objects.append(drop)
+            terrain.map.items.append(drop)
 
 
 
@@ -198,9 +198,8 @@ class Bullet(Object):
         self.y += self.dy
         if terrain.map.is_blocked(self.x, self.y):
             self.dead = True
-        for object in terrain.map.objects:
-            if object.x == self.x and object.y == self.y and \
-                    isinstance(object, Mob):
+        for object in terrain.map.mobs:
+            if object.x == self.x and object.y == self.y:
                 object.take_damage(self.damage - object.defense)
                 ui.message(object.name.capitalize() + 
                         ' is hit by a ' + self.name + ', ' +
@@ -231,7 +230,7 @@ class RangedMob(Mob):
         bullet = Bullet((self.x, self.y), self.bullet_damage, self.bullet_color,
                         dx, dy)
         bullet.update()
-        terrain.map.objects.append(bullet)
+        terrain.map.bullets.append(bullet)
 
 
 
@@ -270,16 +269,15 @@ class Player(Mob):
         ui.message('You drop the ' + dropped_item.name)
         # if there is an item on the square the player is standing on,
         # pick it up
-        for object in terrain.map.objects:
-            if isinstance(object, item.Item) and \
-                    (object.x, object.y) == (self.x, self.y):
+        for object in terrain.map.items:
+            if (object.x, object.y) == (self.x, self.y):
                 self.pick_up(object)
                 # there shouldn't be more than one item on a square
                 break
         # set item position to player's
         (dropped_item.x, dropped_item.y) = (self.x, self.y)
         # insert item to front of list so it is drawn in the back
-        terrain.map.objects.insert(0, dropped_item)
+        terrain.map.items.insert(0, dropped_item)
 
     def die(self):
         ui.message(self.name.capitalize() + ' dies!', tcod.red)
@@ -291,9 +289,8 @@ class Player(Mob):
         m = Mob.move_to(self, x, y)
         if m == 'moved':
             # pick up any ammo from weapons we have on the ground
-            for o in terrain.map.objects:
-                if (o.x == self.x and o.y == self.y) and\
-                        isinstance(o, item.Item):
+            for o in terrain.map.items:
+                if (o.x == self.x and o.y == self.y):
 
                     for i in self.inventory:
                         if o.name == i.name:

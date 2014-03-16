@@ -59,7 +59,7 @@ class Grenade(Item):
         (dx, dy) = direction
         pos = (user.x, user.y)
         grenade = ActiveGrenade(pos, self.damage, self.radius, dx, dy)
-        terrain.map.objects.append(grenade)
+        terrain.map.bullets.append(grenade)
         Item.use(self, user)
         return True
 
@@ -94,9 +94,8 @@ class ActiveGrenade(Object):
 
 def explode(x, y, radius, damage):
     """Convenience function for all that explodes"""
-    for obj in terrain.map.objects:
-        if isinstance(obj, mob.Mob) and \
-                obj.get_distance(x, y) <= radius:
+    for obj in terrain.map.mobs:
+        if obj.get_distance(x, y) <= radius:
             ui.message('The ' + obj.name + ' gets burned for ' +
                        str(damage) + ' hit points.', tcod.orange)
             obj.take_damage(damage)
@@ -121,7 +120,7 @@ class Gun(Item):
         (dx, dy) = direction
         pos = (user.x, user.y)
         bullet = mob.Bullet(pos, self.damage, self.bulletcolor, dx, dy)
-        terrain.map.objects.append(bullet)
+        terrain.map.bullets.append(bullet)
         Item.use(self, user)
         return True
 
