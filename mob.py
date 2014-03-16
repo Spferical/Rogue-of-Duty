@@ -186,6 +186,8 @@ class Bullet(Object):
         #hackish way of doing it though: update, then roll back updates
         for i in range(self.speed):
             self.update()
+            if self.dead:
+                break
         if not self.dead:
             self.x -= self.dx * self.speed
             self.y -= self.dy * self.speed
