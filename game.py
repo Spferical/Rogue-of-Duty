@@ -110,9 +110,9 @@ def run():
 
 
 def update_objects():
-    # update all objects except for bullets
-    for list in terrain.map.objectlists[:-1]:
-        for object in list:
+    # update all objects
+    for list in terrain.map.objectlists:
+        for object in list[:]:
             #only update living objects
             if not object.dead:
                 object.update()
@@ -130,7 +130,7 @@ def update_objects():
 def purge_dead_objects():
     # get rid of all dead objects
     for list in terrain.map.objectlists:
-        for object in list:
+        for object in list[:]:
             if object.dead:
                 object.die()
                 if object == player:

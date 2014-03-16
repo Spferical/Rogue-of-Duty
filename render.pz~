@@ -4,7 +4,6 @@ import ui
 import game
 import terrain
 import textwrap
-import effects
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, RIGHT_PANEL_WIDTH, \
     BAR_WIDTH, MAP_WIDTH, MAP_HEIGHT, BOTTOM_PANEL_WIDTH, \
     BOTTOM_PANEL_HEIGHT, MSG_X, MOUSE_HIGHLIGHT_COLOR, CAMERA_WIDTH, \
@@ -15,6 +14,28 @@ con = right_panel = bottom_panel = None
 prev_mouse_pos = (0, 0)
 
 (camera_x, camera_y) = (0, 0)
+
+fade_effects = []
+
+
+def add_fade_effect(x, y, color, time=EFFECT_FADE_TIME):
+    fade_effects.append([x, y, color, time])
+
+
+def update_fade_effect():
+    for e in fade_effects[:]:
+        x = e[0]
+        y = e[1]
+        color = e[2]
+
+        time = e[3]
+        e[3] -= 1
+        if e[3] <= 0:
+            fade_effects.remove(e)
+
+    tcod.console_set_back(
+        con, x, y, tcod.red * float(EFFECT_FADE_TIME - time) / EFFECT_FADE_TIME))
+
 
 def move_camera(target_x, target_y):
 	global camera_x, camera_y
@@ -166,8 +187,6 @@ def draw_object(object):
     y = object.y - camera_y
     if isinstance(object, mob.Mob) or isinstance(object, mob.Corpse):
         if object.damaged > 0:
-            tcod.console_put_char_ex(con, x, y, object.char, object.color,
-                                tcod.red * (object.damaged / float(EFFECT_FADE_TIME)))
             object.damaged -= 1
             return
     tcod.console_set_default_foreground(con, object.color)
@@ -222,11 +241,11 @@ def render_all():
     # draw each object
     for list in terrain.map.objectlists:
         for object in list:
+            print (object.x, object.y)
             if tcod.map_is_in_fov(terrain.map.fov_map, object.x, object.y):
                 draw_object(object)
     dehilight_old_mouse_position()
     highlight_mouse_position()
-    effects.apply_fade_effects(con)
     # blit renderer main (map) console to tcod's main console
     tcod.console_blit(con, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0)
     # render panel on right

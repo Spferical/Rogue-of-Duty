@@ -7,8 +7,7 @@ import copy
 import item
 import terrain
 import random
-import effects
-from config import DIAGONAL_MOVEMENT, BULLET_LIFE, EFFECT_FADE_TIME
+from config import DIAGONAL_MOVEMENT, BULLET_LIFE, DAMAGE_EFFECT_FADE
 
 
 class Mob(Object):
@@ -37,23 +36,19 @@ class Mob(Object):
             self.ai.update()
 
     def move_or_attack(self, dx, dy):
-        m = self.move_or_get_mob(dx, dy)
-
-        if isinstance(m, Mob):
-            self.attack(m)
-            return 'attacked'
-        else:
-            return m
-
-    def move_or_get_mob(self, dx, dy):
         x = self.x + dx
         y = self.y + dy
 
         target = None
-        for object in terrain.map.mobs:
-            if (object.x, object.y) == (x, y):
-                return object
-        return self.move(dx, dy)
+        for object in terrain.map.objects:
+            if isinstance(object, Mob) and (object.x, object.y) == (x, y):
+                target = object
+                break
+        if target:
+            self.attack(target)
+            return 'attacked'
+        else:
+            return self.move(dx, dy)
 
     def attack(self, target):
         damage = target.take_damage(self.strength)
@@ -77,7 +72,7 @@ class Mob(Object):
     def take_damage(self, damage):
         damage -= self.defense
         if damage > 0:
-            self.damaged = EFFECT_FADE_TIME
+            self.damaged = DAMAGE_EFFECT_FADE
             self.hp -= damage
             if self.hp <= 0:
                 self.dead = True
@@ -151,15 +146,14 @@ class Mob(Object):
             drop = self.drop((self.x, self.y))
             drop.ammo = random.randint(self.drop_ammo_range[0],
                                        self.drop_ammo_range[1])
-            terrain.map.items.append(drop)
+            terrain.map.objects.append(drop)
 
 
 
 class Bullet(Object):
-    name = 'bullet'
+    name = 'crossbow bolt'
     faction = -1
     blocks = False
-    speed = 3
     #dict of ascii chars that will be used with different bullet velocities
     chars = {
         (1, 0) : '-',
@@ -186,31 +180,29 @@ class Bullet(Object):
         #hackish way of doing it though: update, then roll back updates
         self.update()
         if not self.dead:
-            self.x -= self.dx * self.speed
-            self.y -= self.dy * self.speed
-            self.life += self.speed
+            self.x -= self.dx
+            self.y -= self.dy
+            self.life += 1
+
 
     def update(self):
-        for i in range(self.speed):
-            effects.add_fade_effect(self.x, self.y, self.color)
-            self.life -= 1
-            self.x += self.dx
-            self.y += self.dy
-            if terrain.map.is_blocked(self.x, self.y):
+        if self.life <= 0:
+            self.dead = True
+            return
+        self.life -= 1
+        self.x += self.dx
+        self.y += self.dy
+        if terrain.map.is_blocked(self.x, self.y):
+            self.dead = True
+        for object in terrain.map.objects:
+            if object.x == self.x and object.y == self.y and \
+                    isinstance(object, Mob):
+                object.take_damage(self.damage - object.defense)
+                ui.message(object.name.capitalize() + 
+                        ' is hit by a ' + self.name + ', ' +
+                        'taking ' + str(self.damage - object.defense) +
+                        ' damage')
                 self.dead = True
-                break
-            for object in terrain.map.mobs:
-                if object.x == self.x and object.y == self.y:
-                    object.take_damage(self.damage - object.defense)
-                    ui.message(object.name.capitalize() + 
-                            ' is hit by a ' + self.name + ', ' +
-                            'taking ' + str(self.damage - object.defense) +
-                            ' damage')
-                    self.dead = True
-                    break
-            if self.life <= 0:
-                self.dead = True
-            if self.dead:
                 break
 
 
@@ -234,8 +226,8 @@ class RangedMob(Mob):
     def fire(self, dx, dy):
         bullet = Bullet((self.x, self.y), self.bullet_damage, self.bullet_color,
                         dx, dy)
-        #bullet.update()
-        terrain.map.bullets.append(bullet)
+        bullet.update()
+        terrain.map.objects.append(bullet)
 
 
 
@@ -247,7 +239,7 @@ class Player(Mob):
     strength = 6
     defense = 0
     faction = 1
-    description = ''
+    description = 'a stinking human thief'
     blocks = False
     def __init__(self, pos):
         Mob.__init__(self, pos)
@@ -274,15 +266,16 @@ class Player(Mob):
         ui.message('You drop the ' + dropped_item.name)
         # if there is an item on the square the player is standing on,
         # pick it up
-        for object in terrain.map.items:
-            if (object.x, object.y) == (self.x, self.y):
+        for object in terrain.map.objects:
+            if isinstance(object, item.Item) and \
+                    (object.x, object.y) == (self.x, self.y):
                 self.pick_up(object)
                 # there shouldn't be more than one item on a square
                 break
         # set item position to player's
         (dropped_item.x, dropped_item.y) = (self.x, self.y)
         # insert item to front of list so it is drawn in the back
-        terrain.map.items.insert(0, dropped_item)
+        terrain.map.objects.insert(0, dropped_item)
 
     def die(self):
         ui.message(self.name.capitalize() + ' dies!', tcod.red)
@@ -294,8 +287,9 @@ class Player(Mob):
         m = Mob.move_to(self, x, y)
         if m == 'moved':
             # pick up any ammo from weapons we have on the ground
-            for o in terrain.map.items:
-                if (o.x == self.x and o.y == self.y):
+            for o in terrain.map.objects:
+                if (o.x == self.x and o.y == self.y) and\
+                        isinstance(o, item.Item):
 
                     for i in self.inventory:
                         if o.name == i.name:
@@ -311,7 +305,7 @@ class Player(Mob):
 class Corpse(Object):
     char = '%'
     color = tcod.dark_red
-    damaged = EFFECT_FADE_TIME
+    damaged = DAMAGE_EFFECT_FADE
 
     def __init__(self, mob):
         Object.__init__(self, (mob.x, mob.y))
@@ -330,8 +324,6 @@ class Infantry(RangedMob):
     healer = False
     ai = ai.SoldierAI()
 
-    spawn_weight = 10
-
     drop = item.Gun
     drop_ammo_range = (1, 10)
     drop_chance = 0.5
@@ -347,9 +339,6 @@ class Medic(Infantry):
     name = 'medic'
     description = 'a combat medic, skilled at healing troops'
     healer = True
-
-    spawn_weight = 1
-
     drop = item.Heal
     drop_ammo_range = (1, 2)
     drop_chance = 0.5
@@ -359,15 +348,15 @@ class Medic(Infantry):
         mob.hp = mob.max_hp
 
 
-def get_random_mob(list):
+def get_random_mob():
     # Modified from http://stackoverflow.com/questions/3679694
-    total = sum(mob.spawn_weight for mob in list)
+    total = sum(mob.spawn_weight for mob in moblist)
     r = random.uniform(0, total)
     upto = 0
-    for mob in list:
-        if upto + mob.spawn_weight > r:
+    for mob in moblist:
+        if upto + mob.weight > r:
             return mob
-        upto += mob.spawn_weight
+        upto += mob.weight
 
 moblist = [Infantry, Medic]
 factions = {

@@ -61,9 +61,9 @@ class Map:
         self.width = width
         self.height = height
 
+        self.bullets = []
         self.mobs = []
         self.items = []
-        self.bullets = []
         # objects are anything not in the above lists
         self.objects = []
         self.objectlists = (self.objects, self.items, self.mobs, self.bullets)
@@ -121,19 +121,21 @@ class Map:
             return True
 
         # now check for any blocking objects
-        for object in self.objects:
-            if object.blocks and (object.x, object.y) == (x, y):
-                return True
+        for list in self.objectlists:
+            for object in list:
+                if object.blocks and (object.x, object.y) == (x, y):
+                    return True
         return False
 
     def scroll(self):
         #scrolls map by one column
         #scrolls all objects, too
         #deletes all objects on leftmost column
-        for object in self.objects[:]:
-            object.x -= 1
-            if object.x < 0:
-                object.dead = True
+        for list in self.objectlists:
+            for object in list:
+                object.x -= 1
+                if object.x < 0:
+                    object.dead = True
         game.purge_dead_objects()
 
         self.tiles.pop(0)
