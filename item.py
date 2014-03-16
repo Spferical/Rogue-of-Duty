@@ -102,7 +102,7 @@ def explode(x, y, radius, damage):
 
 
 class Gun(Item):
-    ammo = 5
+    ammo = 15
     damage = 5
     char = '/'
     color = tcod.gray
