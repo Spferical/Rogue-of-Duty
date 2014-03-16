@@ -1,6 +1,6 @@
 import libtcodpy as tcod
 from config import TORCH_RADIUS, FOV_LIGHT_WALLS, FOV_ALGO, \
-    DIAGONAL_MOVEMENT, VICTORY_DISTANCE
+    DIAGONAL_MOVEMENT, VICTORY_DISTANCE, MAP_WIDTH
 import render
 import random
 import mapgen
@@ -78,7 +78,7 @@ def handle_keys():  # controls
         ui.handle_escape_menu()
 
     if action == 'moved':
-        if player.x > terrain.map.width / 2:
+        if player.x > MAP_WIDTH / 2:
             terrain.map.scroll()
         # player moved, so we should recompute the fov map
         #terrain.map.init_fov_and_pathfinding()

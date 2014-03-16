@@ -188,15 +188,15 @@ def clear_tile(x, y):
 
 def clear_all_tiles():
     # draw each tile in map
-    for x in xrange(terrain.map.width):
-        for y in xrange(terrain.map.height):
+    for x in xrange(MAP_WIDTH):
+        for y in xrange(MAP_HEIGHT):
             clear_tile(x, y)
 
 
 def draw_all_tiles():
     # draw each tile in map
-    for x in xrange(terrain.map.width):
-        for y in xrange(terrain.map.height):
+    for x in xrange(MAP_WIDTH):
+        for y in xrange(MAP_HEIGHT):
             draw_tile(x, y)
 
 

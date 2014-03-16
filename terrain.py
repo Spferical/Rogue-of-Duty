@@ -141,7 +141,8 @@ class Map:
         self.tiles.pop(0)
         #generate new map column
         self.scroll_amount += 1
-        mapgen.generate_new_map_column(self)
+        if len(self.tiles) < MAP_WIDTH:
+            mapgen.generate_new_map_chunk(self)
         self.update_fov_map()
         self.update_pathfinding()
 
