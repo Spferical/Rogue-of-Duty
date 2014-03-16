@@ -29,7 +29,7 @@ MSG_HEIGHT = BOTTOM_PANEL_HEIGHT - 1
 
 MOUSE_HIGHLIGHT_COLOR = tcod.Color(100, 100, 255)
 
-BULLET_LIFE = 15
+BULLET_LIFE = 50
 
 # if on, players and mobs can move diagonally
 DIAGONAL_MOVEMENT = True
