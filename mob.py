@@ -201,9 +201,7 @@ class Bullet(Object):
                 if object.x == self.x and object.y == self.y:
                     object.take_damage(self.damage - object.defense)
                     ui.message(object.name.capitalize() + 
-                            ' is hit by a ' + self.name + ', ' +
-                            'taking ' + str(self.damage - object.defense) +
-                            ' damage')
+                            ' is hit by a ' + self.name)
                     self.dead = True
                     break
             if self.life <= 0:

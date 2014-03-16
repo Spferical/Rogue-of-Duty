@@ -96,8 +96,7 @@ def explode(x, y, radius, damage):
     """Convenience function for all that explodes"""
     for obj in terrain.map.mobs:
         if obj.get_distance(x, y) <= radius:
-            ui.message('The ' + obj.name + ' gets burned for ' +
-                       str(damage) + ' hit points.', tcod.orange)
+            ui.message('The explosion damages the ' + obj.name, tcod.orange)
             obj.take_damage(damage)
 
 
