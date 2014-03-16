@@ -248,7 +248,7 @@ class Player(Mob):
     defense = 0
     faction = 1
     description = ''
-    blocks = False
+    blocks = True
     def __init__(self, pos):
         Mob.__init__(self, pos)
         self.color = factions[self.faction]
