@@ -3,6 +3,7 @@ import mob
 import random
 from config import DIAGONAL_MOVEMENT, TORCH_RADIUS
 import terrain
+import math
 
 
 class BasicMonster:
@@ -33,13 +34,35 @@ class BasicMonster:
                 # move towards target if far away, or fire
                 if self.owner.distance_to(self.target) >= 2:
                     if isinstance(self.owner, mob.RangedMob) and random.randint(0, 1) == 0:
-                        self.owner.fire_towards(self.target.x, self.target.y)
+                        self.fire_towards_target_if_clear()
                     else:
                         self.owner.move_towards(self.target.x, self.target.y)
 
                 # close enough, attack!
                 else:
                     self.owner.attack(self.target)
+
+    def fire_towards_target_if_clear(self):
+        #vector from this object to the target, and distance
+        dx = self.target.x - self.owner.x
+        dy = self.target.y - self.owner.y
+        distance = math.sqrt(dx ** 2 + dy ** 2)
+
+        #normalize it to length 1 (preserving direction), then round it and
+        #convert to integer so the movement is restricted to the map grid
+        dx = int(round(dx / distance))
+        dy = int(round(dy / distance))
+
+        test_positions = []
+        for i in range(1, 4):
+            test_positions.append((self.owner.x + dx * i, self.owner.y + dy * i))
+
+        for mob in terrain.map.mobs:
+            for pos in test_positions:
+                if mob.faction == self.owner.faction and (mob.x, mob.y) == pos:
+                    return
+
+        self.owner.fire_towards(self.target.x, self.target.y)
 
 
 class ConfusedMob:
