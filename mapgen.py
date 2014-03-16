@@ -32,7 +32,13 @@ class Ruins(Structure):
     tiles = ['*' * 5] * 5
 
 
-structures = [Bunker, Wall, Ruins]
+class Hallways(Structure):
+    weight = 1
+    tiles = ['#' * 5,
+             '.' * 5] * (MAP_HEIGHT / 2)
+
+
+structures = [Bunker, Wall, Ruins, Hallways]
 
 
 def get_tile(t):
