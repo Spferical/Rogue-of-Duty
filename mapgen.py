@@ -66,7 +66,6 @@ def generate_new_map_chunk(map):
 
         x = random.randint(0, 5 - sw)
         y = random.randint(0, map.height - sh)
-        print x, y, struct.tiles
 
         for sx in range(0, sw):
             for sy in range(0, sh):
