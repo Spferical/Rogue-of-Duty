@@ -192,13 +192,11 @@ class Bullet(Object):
 
     def update(self):
         for i in range(self.speed):
-            effects.add_fade_effect(self.x, self.y, self.color)
             self.life -= 1
             self.x += self.dx
             self.y += self.dy
             if terrain.map.is_blocked(self.x, self.y):
                 self.dead = True
-                break
             for object in terrain.map.mobs:
                 if object.x == self.x and object.y == self.y:
                     object.take_damage(self.damage - object.defense)
@@ -212,6 +210,8 @@ class Bullet(Object):
                 self.dead = True
             if self.dead:
                 break
+            elif i != 0:
+                effects.add_fade_effect(self.x, self.y, self.color)
 
 
 class RangedMob(Mob):
