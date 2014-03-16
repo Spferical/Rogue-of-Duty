@@ -44,7 +44,7 @@ class Grenade(Item):
     color = tcod.green
     oneuse = True
     damage = 10
-    radius = 5
+    radius = 4
     ammo = 2
     description = 'Thrown 7 tiles, explodes in a %d tile radius' \
             % (radius)
