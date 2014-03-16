@@ -237,4 +237,4 @@ def new_game():
 
     current_turn = 1
 
-    ui.message('Good job! You managed to sneak into the fortress of the dwarves and nabbed a priceless artifact while the dwarves were busy repelling a seige. Unfortunately, your escape route is now encased in battle! Can you navigate 200 tiles of mayhem?')
+    ui.message('For this mission something something you need to get to the other side of this battlefield! Go 100 tiles to the right!')
