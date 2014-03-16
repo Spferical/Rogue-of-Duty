@@ -215,8 +215,9 @@ def new_game():
         return
     terrain.map = mapgen.generate_map()
 
-    pos = terrain.map.player_start_pos
-    player = mob.Player(pos)
+    (x, y) = terrain.map.player_start_pos
+    terrain.map[x][y] = terrain.Floor()
+    player = mob.Player((x, y))
     for i in starting_items:
         player.get(i((0, 0)))
 
