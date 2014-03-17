@@ -108,7 +108,7 @@ class Gun(Item):
     bulletcolor = tcod.yellow
     name = 'rifle'
     ammo_name = 'rifle bullets'
-    description = 'Fires a bullet. %d ammo, %d damage' % (ammo, damage)
+    description = 'Fires a bullet. %d starting ammo, %d damage' % (ammo, damage)
     def use(self, user, direction=None):
         if direction is None:
             direction = ui.pick_direction()
