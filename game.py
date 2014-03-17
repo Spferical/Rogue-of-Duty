@@ -107,6 +107,7 @@ def run():
                 global state
                 state = 'dead'
         render.render_all()
+    tcod.console_clear(0)
 
 
 def update_objects(render_bullets_flying=False):
