@@ -183,9 +183,11 @@ def randomly_spawn_enemies():
     if random.randint(1, 3) == 1:
         f = 1
         x = 0
-    else:
+    elif player.x + terrain.map.scroll_amount <= VICTORY_DISTANCE - MAP_WIDTH / 2:
         f = 2
         x = terrain.map.width - 1
+    else:
+        return
 
     obj = mob.get_random_mob(mob.moblist)((x, y), f)
     spawn_mob(obj)
