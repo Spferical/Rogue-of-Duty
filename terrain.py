@@ -106,7 +106,7 @@ class Map:
         tile = self[x][y]
         tcod.map_set_properties(self.fov_map, x, y,
                                 not tile.blocks_sight,
-                                not self.is_blocked(x, y))
+                                not self[x][y].blocked)
 
     def update_pathfinding(self):
         tcod.path_delete(self.path)
