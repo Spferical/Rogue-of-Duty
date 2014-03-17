@@ -94,6 +94,7 @@ class SoldierAI(BasicMonster):
             self.move_towards_right()
         else:
             if self.owner.healer:
+                healed = False
                 for m in terrain.map.mobs:
                     if not m.dead and \
                             m.hp < m.max_hp and \
@@ -101,20 +102,22 @@ class SoldierAI(BasicMonster):
                         dist = self.owner.distance_to(m)
                         if dist == 1:
                             self.owner.heal(m)
+                            healed = True
                             self.state = 'healing'
                             break
                 # no mobs found
-                if self.state == 'healing':
+                if self.state == 'healing' and not healed:
                     self.state = 'resting'
-            BasicMonster.update(self);
-            if self.state == 'resting':
-                self.state = 'advancing'
+            if not self.state == 'healing':
+                BasicMonster.update(self);
+                if self.state == 'resting':
+                    self.state = 'advancing'
 
-            if self.state == 'advancing':
-                if self.owner.faction == 1:
-                    self.move_towards_right()
-                else:
-                    self.move_towards_left()
+                if self.state == 'advancing':
+                    if self.owner.faction == 1:
+                        self.move_towards_right()
+                    else:
+                        self.move_towards_left()
     def move_towards_right(self):
         self.owner.move_or_get_mob(1, 0)
     def move_towards_left(self):
