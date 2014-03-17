@@ -45,7 +45,7 @@ class Grenade(Item):
     oneuse = True
     damage = 10
     radius = 4
-    ammo = 2
+    ammo = 5
     description = 'Thrown 7 tiles, explodes in a %d tile radius' \
             % (radius)
 
