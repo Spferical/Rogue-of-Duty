@@ -136,9 +136,9 @@ class Mob(Object):
             tcod.map_set_properties (terrain.map.fov_map, target_x, target_y, 
                                      True, True)
         tcod.path_compute(terrain.map.path, self.x, self.y, target_x, target_y)
+        (x, y) = tcod.path_walk(terrain.map.path, True)
         if blocked:
             terrain.map.update_fov_tile(target_x, target_y)
-        (x, y) = tcod.path_walk(terrain.map.path, True)
         if not (x, y) == (None, None):
             dx, dy = (x - self.x, y - self.y)
             return self.move(dx, dy)
