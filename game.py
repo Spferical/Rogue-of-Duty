@@ -225,6 +225,7 @@ def new_game():
     #terrain.map.init_fov_and_pathfinding()
 
     for i in range(50):
+        randomly_spawn_enemies()
         update_objects()
 
     terrain.map.mobs.append(player)
