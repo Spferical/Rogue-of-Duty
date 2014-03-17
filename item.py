@@ -3,6 +3,7 @@ import libtcodpy as tcod
 import mob
 import ai
 import ui
+import effects
 import terrain
 
 
@@ -98,6 +99,10 @@ def explode(x, y, radius, damage):
         if obj.get_distance(x, y) <= radius:
             ui.message('The explosion damages the ' + obj.name, tcod.orange)
             obj.take_damage(damage)
+    for ex in range(x - radius, x + radius + 1):
+        for ey in range(y - radius, y + radius + 1):
+            if not terrain.map.is_blocked(ex, ey):
+                effects.add_fade_effect(ex, ey, tcod.orange)
 
 
 class Gun(Item):
