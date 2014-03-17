@@ -82,7 +82,7 @@ def handle_keys():  # controls
             terrain.map.scroll()
         # player moved, so we should recompute the fov map
         #terrain.map.init_fov_and_pathfinding()
-        #terrain.map.update_fov_map()
+        terrain.map.update_fov_map()
         compute_fov()
         terrain.map.update_pathfinding()
         #also move render camera
@@ -222,7 +222,7 @@ def new_game():
     for i in starting_items:
         player.get(i((0, 0)))
 
-    #terrain.map.init_fov_and_pathfinding()
+    terrain.map.init_fov_and_pathfinding()
 
     for i in range(50):
         randomly_spawn_enemies()
