@@ -100,7 +100,8 @@ def run():
         if action:
             compute_fov()
             update_objects(True)
-            randomly_spawn_enemies()
+            if random.randint(1, 2) == 1:
+                randomly_spawn_enemies()
             current_turn += 1
             if player.x + terrain.map.scroll_amount >= VICTORY_DISTANCE:
                 ui.message('Congratulations, you win! Press escape to exit.', tcod.cyan)
