@@ -37,3 +37,6 @@ nosetests.xml
 
 #savegame
 savegame
+
+#win libs
+*.dll
