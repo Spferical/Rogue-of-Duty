@@ -188,15 +188,15 @@ def clear_tile(x, y):
 
 def clear_all_tiles():
     # draw each tile in map
-    for x in xrange(MAP_WIDTH):
-        for y in xrange(MAP_HEIGHT):
+    for x in range(MAP_WIDTH):
+        for y in range(MAP_HEIGHT):
             clear_tile(x, y)
 
 
 def draw_all_tiles():
     # draw each tile in map
-    for x in xrange(MAP_WIDTH):
-        for y in xrange(MAP_HEIGHT):
+    for x in range(MAP_WIDTH):
+        for y in range(MAP_HEIGHT):
             draw_tile(x, y)
 
 
@@ -258,9 +258,9 @@ def render_bar(panel, x, y, total_width, name, value, maximum, bar_color,
         tcod.console_rect(panel, x, y, bar_width, 1, False, tcod.BKGND_SET)
     # finally, some centered text with the values
     tcod.console_set_default_foreground(panel, tcod.white)
-    tcod.console_print_ex(panel, x + total_width / 2, y, tcod.BKGND_NONE,
-                          tcod.CENTER, name + ': ' + str(value) +
-                          '/' + str(maximum))
+    tcod.console_print_ex(
+        panel, x + total_width // 2, y, tcod.BKGND_NONE, tcod.CENTER,
+        bytes(name + ': ' + str(value) + '/' + str(maximum), 'utf-8'))
 
 
 def init():

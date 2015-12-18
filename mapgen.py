@@ -35,7 +35,7 @@ class Ruins(Structure):
 class Hallways(Structure):
     weight = 1
     tiles = ['#' * 5,
-             '.' * 5] * (MAP_HEIGHT / 2)
+             '.' * 5] * (MAP_HEIGHT // 2)
 
 
 structures = [Bunker, Wall, Ruins, Hallways]

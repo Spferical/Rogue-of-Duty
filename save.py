@@ -15,7 +15,7 @@ def save_game():
     file['state'] = game.state
     file['turn'] = game.current_turn
     file['messages'] = ui.messages
-    print 'game saved'
+    print('game saved')
     file.close()
 
 
@@ -32,5 +32,5 @@ def load_game():
     game.compute_fov()
     render.init()
     render.draw_all_tiles()
-    print 'game loaded'
+    print('game loaded')
     file.close()

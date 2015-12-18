@@ -76,7 +76,7 @@ class Map:
                       for x in range(width)]
 
         self.init_fov_and_pathfinding()
-        self.player_start_pos = (0, height / 2)
+        self.player_start_pos = (0, height // 2)
 
     def init_fov_and_pathfinding(self):
         # init fov
