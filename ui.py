@@ -153,7 +153,7 @@ def handle_main_menu():
                               bytes(GAME_NAME, 'utf-8'))
         tcod.console_print_ex(0, SCREEN_WIDTH // 2, SCREEN_HEIGHT - 2,
                               tcod.BKGND_NONE, tcod.CENTER,
-                              b'By Spferical (Spferical@gmail.com)')
+                              b'By Matthew Pfeiffer (Spferical@gmail.com)')
 
         # show options and wait for the player's choice
         choice = menu(
